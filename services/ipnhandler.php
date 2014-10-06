@@ -628,7 +628,7 @@
 				$morder->Address1 = get_user_meta($last_order->user_id, "pmpro_baddress1", true);
 				$morder->City = get_user_meta($last_order->user_id, "pmpro_bcity", true);
 				$morder->State = get_user_meta($last_order->user_id, "pmpro_bstate", true);
-				$morder->CountryCode = "US";
+				$morder->CountryCode = pmpro_getOption("defaultcountry");
 				$morder->Zip = get_user_meta($last_order->user_id, "pmpro_bzip", true);
 				$morder->PhoneNumber = get_user_meta($last_order->user_id, "pmpro_bphone", true);
 			

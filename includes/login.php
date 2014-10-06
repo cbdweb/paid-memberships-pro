@@ -24,7 +24,15 @@ function pmpro_login_redirect($redirect_to, $request, $user)
 		else
 		{
 			//not a member, send to subscription page
-			$redirect_to = pmpro_url("levels");
+                        // CBDWeb - if levels available for signup = 1, go straight to checkout
+                        $levels = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->pmpro_membership_levels WHERE allow_signups=1" );
+                        if ( $levels > 1 ) {
+                            $redirect_to = pmpro_url("levels");
+                        } else {
+                            $level = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_membership_levels where allow_signups=1 LIMIT 1" );
+                            $redirect_to = pmpro_url("checkout", "?level=" . $level );
+                        }
+                        
 		}
 	}
 	else
@@ -64,6 +72,7 @@ function pmpro_login_head()
 	)
 	{
 		//redirect registration page to levels page
+            
 		if( isset($_REQUEST['action']) && $_REQUEST['action'] == "register" || 
 			isset($_REQUEST['registration']) && $_REQUEST['registration'] == "disabled"	||
 			!is_admin() && class_exists("Theme_My_Login") && defined('Theme_My_Login::version') && version_compare(Theme_My_Login::version, "6.3") >= 0 && Theme_My_Login::is_tml_page("register")	

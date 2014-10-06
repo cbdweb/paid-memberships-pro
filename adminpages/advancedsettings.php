@@ -18,7 +18,8 @@
 		pmpro_setOption("showexcerpts");
 		pmpro_setOption("hideads");
 		pmpro_setOption("hideadslevels");
-		pmpro_setOption("redirecttosubscription");					
+		pmpro_setOption("redirecttosubscription");
+                pmpro_setOption("defaultcountry");
 						
 		//captcha
 		pmpro_setOption("recaptcha");
@@ -53,6 +54,9 @@
 	
 	if(is_multisite())
 		$redirecttosubscription = pmpro_getOption("redirecttosubscription");
+        
+        $defaultcountry = pmpro_getOption("defaultcountry");
+        if( ! $defaultcountry ) $defaultcountry = "US";
 	
 	$recaptcha = pmpro_getOption("recaptcha");
 	$recaptcha_publickey = pmpro_getOption("recaptcha_publickey");
@@ -209,7 +213,24 @@ if(pmpro_displayAds())
 					</select>                        
 				</td>
 			</tr> 
-			<?php } ?>				
+			<?php } 
+                        global $pmpro_countries
+                                ?>				
+                        <tr>
+                            <th scope="row" valign="top">
+                                <label for="defaultcountry"><?php _e('Default Country', 'pmpro');?>:</label>
+                            </th>
+                            <td>
+                                <select name="defaultcountry">
+                                    <?php
+                                    foreach ( $pmpro_countries as $code => $country ) {
+                                        ?><option value="<?=$code?>" <?=($code===$defaultcountry ? "selected" : "")?>><?=$country?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
 			<tr>
 				<th scope="row" valign="top">
 					<label for="recaptcha"><?php _e('Use reCAPTCHA?', 'pmpro');?>:</label>

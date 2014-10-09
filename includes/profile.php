@@ -13,10 +13,10 @@ function pmpro_membership_level_profile_fields($user)
 
 	global $wpdb;
 	/*$user->membership_level = $wpdb->get_row("SELECT l.id AS ID, l.name AS name
-														FROM {$wpdb->pmpro_membership_levels} AS l
-														JOIN {$wpdb->pmpro_memberships_users} AS mu ON (l.id = mu.membership_id)
-														WHERE mu.user_id = " . $user->ID . "
-														LIMIT 1");*/
+            FROM {$wpdb->pmpro_membership_levels} AS l
+            JOIN {$wpdb->pmpro_memberships_users} AS mu ON (l.id = mu.membership_id)
+            WHERE mu.user_id = " . $user->ID . "
+            LIMIT 1");*/
 	$user->membership_level = pmpro_getMembershipLevelForUser($user->ID);
 
 	$levels = $wpdb->get_results( "SELECT * FROM {$wpdb->pmpro_membership_levels}", OBJECT );
@@ -40,7 +40,7 @@ function pmpro_membership_level_profile_fields($user)
 				<?php
 					foreach($levels as $level)
 					{
-						$current_level = ($user->membership_level->ID == $level->id);
+						$current_level = ( ! empty ( $user->membership_level ) && $user->membership_level->ID == $level->id);
 				?>
 					<option value="<?php echo $level->id?>" <?php if($current_level) { ?>selected="selected"<?php } ?>><?php echo $level->name?></option>
 				<?php

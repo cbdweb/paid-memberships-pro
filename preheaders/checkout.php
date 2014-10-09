@@ -847,6 +847,28 @@ if (!empty($pmpro_confirmed)) {
         } else {
             $enddate = "NULL";
         }
+        /*
+         * override end date with 30/6/ next year for OTU
+         */
+        $ml = pmpro_getMembershipLevelForUser( $user_id );
+        $ped = $ml->enddate;
+        update_user_meta ( $user_id, 'enddate', $ped );
+        $endDT = new DateTime();
+        $endDT->setTimestamp( $ped );
+        $currDT = new DateTime();
+        $ed = new DateTime();
+        if ( $endDT < $currDT ) { // no current sub
+            update_user_meta( $user_id, 'no_current_sub', 1);
+            $m = intval ( $ed->format('m') );
+            $y = intval ( $ed->format('Y') );
+            if ( $m > 6 ) $y++;
+            $ed->setDate($y, 7, 1);
+        } else { // add one year to current sub
+            update_user_meta( $user_id, 'no_current_sub', 0);
+            $y = intval( $endDT->format("Y") );
+            $ed->setDate( $y+1, 7, 1 );
+        }
+        $enddate = $ed->format( "Y-m-d" );
 
         //update membership_user table.
         if (!empty($discount_code) && !empty($use_discount_code))
@@ -908,6 +930,12 @@ if (!empty($pmpro_confirmed)) {
             $meta_keys = array("pmpro_bfirstname", "pmpro_blastname", "pmpro_baddress1", "pmpro_baddress2", "pmpro_bcity", "pmpro_bstate", "pmpro_bzipcode", "pmpro_bcountry", "pmpro_bphone", "pmpro_bemail", "pmpro_CardType", "pmpro_AccountNumber", "pmpro_ExpirationMonth", "pmpro_ExpirationYear");
             $meta_values = array($bfirstname, $blastname, $baddress1, $baddress2, $bcity, $bstate, $bzipcode, $bcountry, $bphone, $bemail, $CardType, hideCardNumber($AccountNumber), $ExpirationMonth, $ExpirationYear);
             pmpro_replaceUserMeta($user_id, $meta_keys, $meta_values);
+            wp_update_user( array (
+                'ID' => $current_user->ID, 
+                'user_email' => esc_attr( $bemail ),
+                'user_nicename' => esc_attr( $bfirstname . " " . $blastname ),
+                'display_name' => esc_attr ( $bfirstname . " " . $blastname ),
+            ) ); // added ngd - pmpro doesn't update ???
 
             //save first and last name fields
             if (!empty($bfirstname)) {

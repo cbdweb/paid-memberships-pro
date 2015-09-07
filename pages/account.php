@@ -14,6 +14,7 @@
 				<li><strong><?php _e("Membership Fee", "pmpro");?>:</strong>
 				<?php
 					$level = $current_user->membership_level;
+					// CBDWeb change to fixed terms
 					if($current_user->membership_level->cycle_number > 1) {
 						printf(__('%s due on %s.', 'pmpro'), $pmpro_currency_symbol . $level->billing_amount, "30th June each year");
 					} elseif($current_user->membership_level->cycle_number == 1) {
@@ -52,11 +53,13 @@
 				<p><?php echo $current_user->user_firstname?> <?php echo $current_user->user_lastname?></p>
 			<?php } ?>
 			<ul>
+				<!-- CBDWeb can't change username -->
 				<!--<li><strong><?php _e("Username", "pmpro");?>:</strong> <?php echo $current_user->user_login?></li>-->
 				<li><strong><?php _e("Email", "pmpro");?>:</strong> <?php echo $current_user->user_email?></li>
 			</ul>
 			<p>
 				<a href="<?php echo esc_url( get_permalink( get_page_by_title( 'Update Your Information' ) ) )?>"><?php _e("Edit Profile", "pmpro");?></a>
+				<!-- CBDWeb can't change password -->
 				<!--<a href="<?php echo admin_url('profile.php')?>"><?php _ex("Change Password", "As in 'change password'.", "pmpro");?></a>-->
 			</p>
 		</div> <!-- end pmpro_account-profile -->
